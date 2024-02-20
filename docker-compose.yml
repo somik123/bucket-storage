@@ -1,0 +1,50 @@
+version: "3"
+
+volumes:
+  bucket_db:
+    name: bucket_db
+  bucket_logs:
+    name: bucket_logs
+  bucket_storage:
+    name: bucket_storage
+
+services:
+  db:
+    container_name: mysql
+    image: mysql
+    restart: unless-stopped
+    volumes:
+      - bucket_db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: Pgpnc4nkwdMZpeF2w4yWz7Th
+      MYSQL_DATABASE: XYgPZX7WCiW
+      MYSQL_USER: mhvXD4AuBi7
+      MYSQL_PASSWORD: DYg3FejmiQ4RdNcFHYNU3NWs
+      TZ: Asia/Singapore
+
+  backend_java:
+    image: somik123/bucket-storage
+    container_name: bucket_java
+    restart: unless-stopped
+    volumes:
+      - bucket_storage:/usr/app/storage
+      - bucket_logs:/usr/app/logs
+    environment:
+      BUCKET_USER: admin
+      BUCKET_PASS: zR6CzF9bZp3@HTPzaaY%2Fzv
+      BUCKET_PASS_HIDE: no
+      BUCKET_DB_HOST: db
+      BUCKET_DB_NAME: XYgPZX7WCiW
+      BUCKET_DB_USER: mhvXD4AuBi7
+      BUCKET_DB_PASS: DYg3FejmiQ4RdNcFHYNU3NWs
+      TZ: Asia/Singapore
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    links:
+      - db
+
+# Add the db manager bellow this line only for testing (not secure)
+
+
