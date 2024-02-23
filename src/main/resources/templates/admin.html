@@ -30,8 +30,7 @@
 				<tr th:each="i : ${#numbers.sequence(0, max)}">
 					<td class="text-center" th:text="${i+1}">1</td>
 					<td class="text-center">
-						<a th:href="'/bucket/' + ${bucketList.get(i).id} + '/' + ${bucketList.get(i).uploadKey} + '/' + ${bucketList.get(i).downloadKey}"
-							target="_blank">
+						<a href="#" th:onclick="'return open_bucket(' + ${i+1} + ');'">
 							<span th:text="${bucketList.get(i).name}"></span>
 						</a>
 					</td>
@@ -74,11 +73,9 @@
 									<td>Upload key:</td>
 									<td>
 										<span th:id="'ulk_' + ${i+1}" th:text="${bucketList.get(i).uploadKey}"></span>
-										<img src="./img/refresh-icon.png" alt="Refresh"
-											style="margin-left: 5px; height:12px;"
+										<img src="./img/refresh-icon.png" alt="Refresh" class="icon-image"
 											th:onclick="'return generate_new_key(\'up\',\'' + ${i+1} + '\');'" />
-										<img src="./img/disable.png" alt="Refresh"
-											style="margin-left: 5px; height:12px;"
+										<img src="./img/disable.png" alt="Refresh" class="icon-image"
 											th:onclick="'return disable_key(\'up\',\'' + ${i+1} + '\');'" />
 									</td>
 								</tr>
@@ -86,18 +83,16 @@
 									<td>Download key:</td>
 									<td>
 										<span th:id="'dlk_' + ${i+1}" th:text="${bucketList.get(i).downloadKey}"></span>
-										<img src="./img/refresh-icon.png" alt="Refresh"
-											style="margin-left: 5px; height:12px;"
+										<img src="./img/refresh-icon.png" alt="Refresh" class="icon-image"
 											th:onclick="'return generate_new_key(\'down\',\'' + ${i+1} + '\');'" />
-										<img src="./img/disable.png" alt="Refresh"
-											style="margin-left: 5px; height:12px;"
+										<img src="./img/disable.png" alt="Refresh" class="icon-image"
 											th:onclick="'return disable_key(\'down\',\'' + ${i+1} + '\');'" />
 									</td>
 								</tr>
 								<tr>
 									<td>Storage path:</td>
 									<td
-										th:text=" ${bucketList.get(i).name} + '_[' + ${bucketList.get(i).downloadKey}+']'">
+										th:text=" ${bucketList.get(i).name} + '_[' + ${bucketList.get(i).id}+']'">
 									</td>
 								</tr>
 								<tr>

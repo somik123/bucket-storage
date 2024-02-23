@@ -28,6 +28,7 @@ function create_bucket() {
 	return true;
 }
 
+
 function delete_bucket(sl) {
 	id = document.getElementById("id_" + sl).innerHTML;
 	if (id == null || id.length == 0) {
@@ -57,6 +58,7 @@ function delete_bucket(sl) {
 	return false;
 }
 
+
 function generate_new_key(type, sl) {
 	el = null;
 	id = document.getElementById("id_" + sl).innerHTML;
@@ -71,7 +73,7 @@ function generate_new_key(type, sl) {
 	}
 	else {
 		key_type = "download key";
-		url = "resetUploadKey/" + id;
+		url = "resetDownloadKey/" + id;
 		el = document.getElementById("dlk_" + sl);
 	}
 	if (confirm("Regenerate " + key_type + " with id:\n" + id) != true)
@@ -97,6 +99,8 @@ function generate_new_key(type, sl) {
 	}
 	return false;
 }
+
+
 function generate_link(type, sl) {
 	url = "";
 	id = document.getElementById("id_" + sl).innerHTML;
@@ -118,6 +122,7 @@ function generate_link(type, sl) {
 	let el = document.getElementById("modal_" + sl);
 	copyTextToClipboard(url, el);
 }
+
 
 // Fallback function to copy text to clipboard
 function fallbackCopyTextToClipboard(text, el = document.body) {
@@ -145,6 +150,7 @@ function fallbackCopyTextToClipboard(text, el = document.body) {
 
 	el.removeChild(textArea);
 }
+
 
 // Main function to copy text to clipboard
 function copyTextToClipboard(text, el = document.body) {
@@ -231,5 +237,66 @@ function delete_file(sl) {
 	return false;
 }
 
+
+
+function disable_key(type, sl) {
+	el = null;
+	id = document.getElementById("id_" + sl).innerHTML;
+	if (id.length == 0) {
+		alert("Bucket ID cannot be empty");
+		return false;
+	}
+	if (type == "up") {
+		key_type = "upload key";
+		url = "disableUploadKey/" + id;
+		el = document.getElementById("ulk_" + sl);
+	}
+	else {
+		key_type = "download key";
+		url = "disableDownloadKey/" + id;
+		el = document.getElementById("dlk_" + sl);
+	}
+	if (confirm("Disable " + key_type + " with id:\n" + id) != true)
+		return false;
+
+	var http = new XMLHttpRequest();
+	http.open("GET", "/api/" + url, true);
+	http.setRequestHeader("Content-type", "application/json");
+	http.setRequestHeader("X-API-KEY", "somik123");
+	http.send();
+	http.onload = function () {
+		if (http.responseText.length > 0) {
+			var api_reply = JSON.parse(http.responseText);
+			if (api_reply["status"] == "OK") {
+				el.innerHTML = api_reply["content"];
+				return true;
+			}
+			alert("Error:\n" + api_reply['error']);
+		}
+		else {
+			alert("Failed to disable " + key_type + " for id:\n" + id);
+		}
+	}
+	return false;
+}
+
+
+function open_bucket(sl) {
+	let id = document.getElementById("id_" + sl).innerHTML;
+	if (id.length == 0) {
+		alert("Bucket ID cannot be empty");
+		return false;
+	}
+	let up_key = document.getElementById("ulk_" + sl).innerHTML;
+	let down_key = document.getElementById("dlk_" + sl).innerHTML;
+	if (up_key == "DISABLED" || down_key == "DISABLED") {
+		alert("Bucket [" + id + "] browsing is disabled.");
+	}
+	else {
+		let url = "/bucket/" + id + "/" + up_key + "/" + down_key;
+		window.open(url);
+	}
+	return false;
+}
 
 
