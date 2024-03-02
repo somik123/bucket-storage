@@ -46,16 +46,14 @@ public class FileStorageService {
 	public String save(MultipartFile file, String uploadPath) {
 		try {
 			String fileName = file.getOriginalFilename();
-			if (fileName == null || fileName.length() < 2){
+			fileName = CommonUtils.cleanFileName(fileName);
+			if (fileName == null || fileName.length() < 2) {
 				log.info("Missing filename. Generating random file name");
 				return null;
-			}
-			if (fileName.length() == 0 || fileName.contains("..") || uploadPath.contains("..")) {
+			} else if (fileName.length() == 0 || fileName.contains("..") || uploadPath.contains("..")) {
 				log.warning("Invalid file name or upload path.");
 				return null;
-			}
-			fileName = CommonUtils.cleanFileName(fileName);
-			if (uploadPath.length() > 0) {
+			} else if (uploadPath.length() > 0) {
 				uploadPath = CommonUtils.cleanFileName(uploadPath);
 				fileName = uploadPath + "/" + fileName;
 				Files.createDirectories(bucketPath.resolve(uploadPath));
@@ -73,7 +71,12 @@ public class FileStorageService {
 
 	public Resource load(String fileName, String downloadPath) {
 		try {
-			if (downloadPath.length() > 0) {
+			fileName = CommonUtils.cleanFileName(fileName);
+			if (fileName.length() == 0 || fileName.contains("..") || downloadPath.contains("..")) {
+				log.warning("Invalid file name or download path.");
+				return null;
+			} else if (downloadPath.length() > 0) {
+				downloadPath = CommonUtils.cleanFileName(downloadPath);
 				fileName = downloadPath + "/" + fileName;
 			}
 			Path file = bucketPath.resolve(fileName);
@@ -99,8 +102,10 @@ public class FileStorageService {
 
 	public String getMimeType(String fileName, String downloadPath) {
 		String mimeType = "";
+		fileName = CommonUtils.cleanFileName(fileName);
 		try {
 			if (downloadPath.length() > 0) {
+				downloadPath = CommonUtils.cleanFileName(downloadPath);
 				fileName = downloadPath + "/" + fileName;
 			}
 			Path file = bucketPath.resolve(fileName);
@@ -122,7 +127,9 @@ public class FileStorageService {
 	public Boolean deleteFile(String fileName, String deletePath) {
 		Boolean status = false;
 		try {
+			fileName = CommonUtils.cleanFileName(fileName);
 			if (deletePath.length() > 0) {
+				deletePath = CommonUtils.cleanFileName(deletePath);
 				fileName = deletePath + "/" + fileName;
 			}
 			Path file = bucketPath.resolve(fileName);
@@ -184,10 +191,11 @@ public class FileStorageService {
 		}
 	}
 
-	public String getDownloadLink(String fileName) {
+	public String getDownloadLink(String cleanFileName) {
 		String url = "";
 		try {
-			String urlDecoded = "/download/" + bucket.getId() + "/" + bucket.getDownloadKey() + "/" + fileName;
+			
+			String urlDecoded = "/download/" + bucket.getId() + "/" + bucket.getDownloadKey() + "/" + cleanFileName;
 			url = UriUtils.encodePath(urlDecoded, "UTF-8");
 		} catch (Exception e) {
 			log.warning("Error encoding parameter ");
@@ -197,5 +205,4 @@ public class FileStorageService {
 		}
 		return url;
 	}
-
 }
