@@ -11,7 +11,8 @@ RUN mvn -f ./pom.xml clean package -Dmaven.test.skip=true
 
 
 # Run application
-FROM somik123/ubuntu:22-jdk21
+#FROM somik123/ubuntu:22-jdk21
+FROM eclipse-temurin:21.0.2_13-jre-alpine
 
 WORKDIR /usr/app
 
