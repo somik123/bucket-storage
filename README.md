@@ -2,7 +2,16 @@
 # Bucket Storage
 A simple bucket storage system written in Java Spring Boot
 
-Set the following environment variables to change login details:
+Set the following environment variables if not using official docker image:
+```
+BUCKET_USER - Admin username to manage all buckets
+BUCKET_PASS - Admin password to manage all buckets
+BUCKET_PASS_HIDE - Set this to "yes" to disable printing the password to logs when starting up the app
+BUCKET_DB_HOST - MySQL database host, usually localhost
+BUCKET_DB_NAME - MySQL database name. Note that the database must exist. Tables will be autocreated on boot (if not exist)
+BUCKET_DB_USER - MySQL database usernme
+BUCKET_DB_PASS - MySQL database password
+```
 
 ### Installation
 Copy/download the `docker-compose.yml` file and run it. You do not require any of the other source files unless you want to build the image yourself.
